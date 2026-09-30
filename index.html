@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Paul IoT Lab</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #0b1020;
+      color: #ffffff;
+      min-height: 100vh;
+    }
+
+    .container {
+      width: min(1000px, 92%);
+      margin: 0 auto;
+      padding: 36px 0 50px;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 2.4rem;
+      letter-spacing: 1px;
+    }
+
+    .header p {
+      margin: 10px 0 0;
+      color: #aab4cc;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px;
+    }
+
+    .card {
+      display: block;
+      text-decoration: none;
+      color: #ffffff;
+      background: #151d33;
+      border: 1px solid #273453;
+      border-radius: 18px;
+      padding: 24px;
+      min-height: 170px;
+      transition: 0.2s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      border-color: #5d82ff;
+      background: #1b2642;
+    }
+
+    .icon {
+      font-size: 2.4rem;
+      margin-bottom: 14px;
+    }
+
+    .card h2 {
+      margin: 0 0 8px;
+      font-size: 1.35rem;
+    }
+
+    .card p {
+      margin: 0;
+      color: #aab4cc;
+      line-height: 1.5;
+      font-size: 0.95rem;
+    }
+
+    .status {
+      display: inline-block;
+      margin-top: 16px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: #163820;
+      color: #7dff9c;
+      font-size: 0.78rem;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 34px;
+      color: #6f7b95;
+      font-size: 0.85rem;
+    }
+
+    @media (max-width: 700px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .container {
+        padding-top: 28px;
+      }
+
+      .header h1 {
+        font-size: 2rem;
+      }
+
+      .card {
+        min-height: auto;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <div class="header">
+      <h1>PAUL IoT LAB</h1>
+      <p>Engineering Tools & Web Applications</p>
+    </div>
+
+    <div class="grid">
+
+      <a class="card" href="https://modbus.paul-iot-lab.com">
+        <div class="icon">🔌</div>
+        <h2>Modbus Tool</h2>
+        <p>Modbus TCP / RTU reader, testing and engineering utilities.</p>
+        <span class="status">Tool</span>
+      </a>
+
+      <a class="card" href="https://thermal.paul-iot-lab.com">
+        <div class="icon">🌡️</div>
+        <h2>Thermal Inspection</h2>
+        <p>Thermal inspection, image comparison and PDF reporting.</p>
+        <span class="status">Available</span>
+      </a>
+
+      <a class="card" href="https://patrol.paul-iot-lab.com">
+        <div class="icon">📍</div>
+        <h2>NFC Patrol</h2>
+        <p>NFC checkpoint and patrol activity tracking system.</p>
+        <span class="status">Available</span>
+      </a>
+
+      <a class="card" href="https://alarm.paul-iot-lab.com">
+        <div class="icon">🚨</div>
+        <h2>Alarm Assistant</h2>
+        <p>Factory alarm response and guided inspection system.</p>
+        <span class="status">Development</span>
+      </a>
+
+    </div>
+
+    <div class="footer">
+      Paul IoT Lab
+    </div>
+
+  </div>
+
+</body>
+</html>
