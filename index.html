@@ -92,6 +92,16 @@ color: #7dff9c;
 font-size: 0.78rem;
 }
 
+.status.tool {
+background: #17315c;
+color: #8fc5ff;
+}
+
+.status.dev {
+background: #5a3b10;
+color: #ffd98a;
+}
+
 .footer {
 text-align: center;
 margin-top: 34px;
@@ -100,6 +110,7 @@ font-size: 0.85rem;
 }
 
 @media (max-width: 700px) {
+
 .grid {
 grid-template-columns: 1fr;
 }
@@ -115,6 +126,7 @@ font-size: 2rem;
 .card {
 min-height: auto;
 }
+
 }
 </style>
 </head>
@@ -132,37 +144,49 @@ min-height: auto;
 
 <a class="card" href="https://modbus.paul-iot-lab.com">
 <div class="icon">🔌</div>
-<h2>Modbus Tool</h2>
-<p>Modbus TCP / RTU reader, testing and engineering utilities.</p>
-<span class="status">Tool</span>
+<h2>Modbus RTU Tool</h2>
+<p>
+USB-RS485 Modbus RTU reader and diagnostic tool.
+Read-only FC01, FC02, FC03 and FC04.
+Recommended for Chrome / Edge desktop.
+</p>
+<span class="status tool">PC Verified</span>
 </a>
 
 <a class="card" href="https://mqtt.paul-iot-lab.com">
 <div class="icon">📡</div>
 <h2>MQTT Explorer</h2>
-<p>MQTT topic monitoring, tree view, testing and debugging tool.</p>
-<span class="status">Tool</span>
+<p>
+MQTT topic monitoring, tree view, testing and debugging tool.
+</p>
+<span class="status tool">Tool</span>
 </a>
 
 <a class="card" href="https://thermal.paul-iot-lab.com">
 <div class="icon">🌡️</div>
 <h2>Thermal Inspection</h2>
-<p>Thermal inspection, image comparison and PDF reporting.</p>
+<p>
+Thermal inspection, image comparison and PDF reporting.
+</p>
 <span class="status">Available</span>
 </a>
 
 <a class="card" href="https://patrol.paul-iot-lab.com">
 <div class="icon">📍</div>
 <h2>NFC Patrol</h2>
-<p>NFC checkpoint and patrol activity tracking system.</p>
+<p>
+NFC checkpoint and patrol activity tracking system.
+</p>
 <span class="status">Available</span>
 </a>
 
 <a class="card" href="https://alarm.paul-iot-lab.com">
 <div class="icon">🚨</div>
 <h2>Alarm Assistant</h2>
-<p>Factory alarm response and guided inspection system.</p>
-<span class="status">Development</span>
+<p>
+Factory alarm response and guided inspection system.
+</p>
+<span class="status dev">Development</span>
 </a>
 
 </div>
