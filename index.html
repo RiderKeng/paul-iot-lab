@@ -1,673 +1,170 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MQTT Explorer | Paul IoT Lab</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+<title>Paul IoT Lab</title>
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+<style>
+* {
+box-sizing: border-box;
+}
 
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #0f172a;
-      color: #e5e7eb;
-    }
+body {
+margin: 0;
+font-family: Arial, Helvetica, sans-serif;
+background: #0b1020;
+color: #ffffff;
+min-height: 100vh;
+}
 
-    header {
-      padding: 16px;
-      background: #111827;
-      border-bottom: 1px solid #334155;
-    }
+.container {
+width: min(1000px, 92%);
+margin: 0 auto;
+padding: 36px 0 50px;
+}
 
-    header h1 {
-      margin: 0;
-      font-size: 22px;
-    }
+.header {
+text-align: center;
+margin-bottom: 32px;
+}
 
-    header p {
-      margin: 5px 0 0;
-      color: #94a3b8;
-      font-size: 13px;
-    }
+.header h1 {
+margin: 0;
+font-size: 2.4rem;
+letter-spacing: 1px;
+}
 
-    .container {
-      max-width: 1000px;
-      margin: auto;
-      padding: 14px;
-    }
+.header p {
+margin: 10px 0 0;
+color: #aab4cc;
+}
 
-    .card {
-      background: #1e293b;
-      border: 1px solid #334155;
-      border-radius: 12px;
-      padding: 14px;
-      margin-bottom: 14px;
-    }
+.grid {
+display: grid;
+grid-template-columns: repeat(2, 1fr);
+gap: 18px;
+}
 
-    label {
-      display: block;
-      margin-top: 10px;
-      margin-bottom: 5px;
-      color: #cbd5e1;
-      font-size: 13px;
-    }
+.card {
+display: block;
+text-decoration: none;
+color: #ffffff;
+background: #151d33;
+border: 1px solid #273453;
+border-radius: 18px;
+padding: 24px;
+min-height: 170px;
+transition: 0.2s ease;
+}
 
-    input,
-    select,
-    textarea,
-    button {
-      width: 100%;
-      padding: 11px;
-      border-radius: 8px;
-      border: 1px solid #475569;
-      background: #0f172a;
-      color: #f8fafc;
-      font-size: 15px;
-    }
+.card:hover {
+transform: translateY(-3px);
+border-color: #5d82ff;
+background: #1b2642;
+}
 
-    textarea {
-      min-height: 80px;
-      resize: vertical;
-    }
+.icon {
+font-size: 2.4rem;
+margin-bottom: 14px;
+}
 
-    button {
-      cursor: pointer;
-      font-weight: bold;
-    }
+.card h2 {
+margin: 0 0 8px;
+font-size: 1.35rem;
+}
 
-    .btn-primary {
-      background: #2563eb;
-      border-color: #2563eb;
-    }
+.card p {
+margin: 0;
+color: #aab4cc;
+line-height: 1.5;
+font-size: 0.95rem;
+}
 
-    .btn-danger {
-      background: #b91c1c;
-      border-color: #b91c1c;
-    }
+.status {
+display: inline-block;
+margin-top: 16px;
+padding: 5px 10px;
+border-radius: 999px;
+background: #163820;
+color: #7dff9c;
+font-size: 0.78rem;
+}
 
-    .btn-secondary {
-      background: #334155;
-    }
+.footer {
+text-align: center;
+margin-top: 34px;
+color: #6f7b95;
+font-size: 0.85rem;
+}
 
-    .row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
+@media (max-width: 700px) {
+.grid {
+grid-template-columns: 1fr;
+}
 
-    .row3 {
-      display: grid;
-      grid-template-columns: 2fr 1fr 1fr;
-      gap: 10px;
-    }
+.container {
+padding-top: 28px;
+}
 
-    .buttons {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-top: 14px;
-    }
+.header h1 {
+font-size: 2rem;
+}
 
-    #status {
-      display: inline-block;
-      padding: 6px 10px;
-      border-radius: 20px;
-      background: #475569;
-      font-size: 13px;
-      margin-top: 8px;
-    }
-
-    .connected {
-      background: #166534 !important;
-    }
-
-    .disconnected {
-      background: #991b1b !important;
-    }
-
-    .topic-toolbar {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 8px;
-      margin-bottom: 10px;
-    }
-
-    .topic-toolbar button {
-      width: auto;
-      padding-left: 18px;
-      padding-right: 18px;
-    }
-
-    .topic {
-      border-bottom: 1px solid #334155;
-      padding: 10px 4px;
-    }
-
-    .topic-name {
-      color: #60a5fa;
-      font-family: monospace;
-      word-break: break-all;
-      font-size: 14px;
-    }
-
-    .payload {
-      margin-top: 4px;
-      color: #f8fafc;
-      font-family: monospace;
-      word-break: break-word;
-      white-space: pre-wrap;
-    }
-
-    .meta {
-      margin-top: 4px;
-      color: #94a3b8;
-      font-size: 11px;
-    }
-
-    .empty {
-      color: #64748b;
-      text-align: center;
-      padding: 30px 5px;
-    }
-
-    .small {
-      color: #94a3b8;
-      font-size: 12px;
-      line-height: 1.5;
-    }
-
-    @media (max-width: 650px) {
-      .row,
-      .row3,
-      .buttons {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
+.card {
+min-height: auto;
+}
+}
+</style>
 </head>
 
 <body>
 
-<header>
-  <h1>MQTT Explorer</h1>
-  <p>Paul IoT Lab · MQTT testing tool</p>
-</header>
-
 <div class="container">
 
-  <!-- PROFILE -->
-  <div class="card">
-    <h3>Connection Profile</h3>
+<div class="header">
+<h1>PAUL IoT LAB</h1>
+<p>Engineering Tools & Web Applications</p>
+</div>
 
-    <label>Saved Profile</label>
-    <select id="profileSelect"></select>
+<div class="grid">
 
-    <div class="buttons">
-      <button class="btn-secondary" onclick="newProfile()">New Profile</button>
-      <button class="btn-danger" onclick="deleteProfile()">Delete Profile</button>
-    </div>
+<a class="card" href="https://modbus.paul-iot-lab.com">
+<div class="icon">🔌</div>
+<h2>Modbus Tool</h2>
+<p>Modbus TCP / RTU reader, testing and engineering utilities.</p>
+<span class="status">Tool</span>
+</a>
 
-    <label>Profile Name</label>
-    <input id="profileName" placeholder="AMW EMQX" />
+<a class="card" href="https://thermal.paul-iot-lab.com">
+<div class="icon">🌡️</div>
+<h2>Thermal Inspection</h2>
+<p>Thermal inspection, image comparison and PDF reporting.</p>
+<span class="status">Available</span>
+</a>
 
-    <label>Hostname</label>
-    <input id="host" placeholder="xxxx.emqxsl.com" />
+<a class="card" href="https://patrol.paul-iot-lab.com">
+<div class="icon">📍</div>
+<h2>NFC Patrol</h2>
+<p>NFC checkpoint and patrol activity tracking system.</p>
+<span class="status">Available</span>
+</a>
 
-    <div class="row">
-      <div>
-        <label>WSS Port</label>
-        <input id="port" type="number" value="8084" />
-      </div>
-
-      <div>
-        <label>Subscribe Topic</label>
-        <input id="subscription" value="#" />
-      </div>
-    </div>
-
-    <label>Client ID</label>
-    <input id="clientId" placeholder="paul-mqtt-test-01" />
-
-    <div class="row">
-      <div>
-        <label>Username</label>
-        <input id="username" />
-      </div>
-
-      <div>
-        <label>Password</label>
-        <input id="password" type="password" />
-      </div>
-    </div>
-
-    <div class="buttons">
-      <button class="btn-secondary" onclick="saveProfile()">
-        Save Profile
-      </button>
-
-      <button class="btn-primary" id="connectBtn" onclick="toggleConnection()">
-        Connect
-      </button>
-    </div>
-
-    <div id="status">Disconnected</div>
-
-    <p class="small">
-      Profile จะจำ Host, Port, Username, Client ID และ Subscribe Topic
-      แต่จะไม่บันทึก Password ลง browser
-    </p>
-  </div>
-
-  <!-- TOPICS -->
-  <div class="card">
-    <h3>Live Topics</h3>
-
-    <div class="topic-toolbar">
-      <input
-        id="search"
-        placeholder="Search topic..."
-        oninput="renderTopics()"
-      />
-
-      <button class="btn-secondary" onclick="clearTopics()">
-        Clear
-      </button>
-    </div>
-
-    <div id="topicCount" class="small">0 topics</div>
-
-    <div id="topics">
-      <div class="empty">Waiting for MQTT messages...</div>
-    </div>
-  </div>
-
-  <!-- PUBLISH -->
-  <div class="card">
-    <h3>Publish Test Message</h3>
-
-    <label>Topic</label>
-    <input id="pubTopic" placeholder="test/mqtt" />
-
-    <label>Payload</label>
-    <textarea id="pubPayload">hello</textarea>
-
-    <div class="row">
-      <div>
-        <label>QoS</label>
-        <select id="pubQos">
-          <option value="0">0</option>
-          <option value="1">1</option>
-        </select>
-      </div>
-
-      <div>
-        <label>Retain</label>
-        <select id="pubRetain">
-          <option value="false">No</option>
-          <option value="true">Yes</option>
-        </select>
-      </div>
-    </div>
-
-    <button
-      class="btn-primary"
-      style="margin-top:14px"
-      onclick="publishMessage()"
-    >
-      Publish
-    </button>
-  </div>
+<a class="card" href="https://alarm.paul-iot-lab.com">
+<div class="icon">🚨</div>
+<h2>Alarm Assistant</h2>
+<p>Factory alarm response and guided inspection system.</p>
+<span class="status">Development</span>
+</a>
 
 </div>
 
-<script>
-  let client = null;
-  let topics = {};
-  let profiles = [];
-
-  const PROFILE_KEY = "paul_mqtt_profiles";
-
-  // ==============================
-  // PROFILE STORAGE
-  // ==============================
-
-  function loadProfiles() {
-    try {
-      profiles = JSON.parse(localStorage.getItem(PROFILE_KEY)) || [];
-    } catch {
-      profiles = [];
-    }
-
-    refreshProfileSelect();
-
-    if (profiles.length > 0) {
-      loadProfile(0);
-    } else {
-      newProfile();
-    }
-  }
-
-  function refreshProfileSelect() {
-    const select = document.getElementById("profileSelect");
-    select.innerHTML = "";
-
-    profiles.forEach((profile, index) => {
-      const option = document.createElement("option");
-      option.value = index;
-      option.textContent = profile.name || `Profile ${index + 1}`;
-      select.appendChild(option);
-    });
-
-    select.onchange = () => {
-      loadProfile(Number(select.value));
-    };
-  }
-
-  function newProfile() {
-    document.getElementById("profileName").value = "";
-    document.getElementById("host").value = "";
-    document.getElementById("port").value = "8084";
-    document.getElementById("subscription").value = "#";
-    document.getElementById("clientId").value =
-      "mqtt-test-" + Math.floor(Math.random() * 10000);
-
-    document.getElementById("username").value = "";
-    document.getElementById("password").value = "";
-
-    document.getElementById("profileSelect").value = "";
-  }
-
-  function saveProfile() {
-    const profile = {
-      name: value("profileName"),
-      host: value("host"),
-      port: value("port"),
-      subscription: value("subscription") || "#",
-      clientId: value("clientId"),
-      username: value("username")
-    };
-
-    if (!profile.name) {
-      alert("Please enter Profile Name");
-      return;
-    }
-
-    let index = profiles.findIndex(p => p.name === profile.name);
-
-    if (index >= 0) {
-      profiles[index] = profile;
-    } else {
-      profiles.push(profile);
-      index = profiles.length - 1;
-    }
-
-    localStorage.setItem(PROFILE_KEY, JSON.stringify(profiles));
-
-    refreshProfileSelect();
-    document.getElementById("profileSelect").value = index;
-
-    alert("Profile saved");
-  }
-
-  function loadProfile(index) {
-    const p = profiles[index];
-
-    if (!p) return;
-
-    setValue("profileName", p.name);
-    setValue("host", p.host);
-    setValue("port", p.port || "8084");
-    setValue("subscription", p.subscription || "#");
-    setValue("clientId", p.clientId);
-    setValue("username", p.username);
-
-    // Password intentionally not stored
-    setValue("password", "");
-  }
-
-  function deleteProfile() {
-    const select = document.getElementById("profileSelect");
-    const index = Number(select.value);
-
-    if (!profiles[index]) return;
-
-    if (!confirm("Delete this profile?")) return;
-
-    profiles.splice(index, 1);
-
-    localStorage.setItem(PROFILE_KEY, JSON.stringify(profiles));
-
-    refreshProfileSelect();
-
-    if (profiles.length > 0) {
-      loadProfile(0);
-    } else {
-      newProfile();
-    }
-  }
-
-  // ==============================
-  // MQTT
-  // ==============================
-
-  function toggleConnection() {
-    if (client && client.connected) {
-      client.end(true);
-      return;
-    }
-
-    connectMQTT();
-  }
-
-  function connectMQTT() {
-    const host = value("host").trim();
-    const port = value("port").trim();
-    const username = value("username");
-    const password = value("password");
-    const clientId = value("clientId").trim();
-    const subscription = value("subscription").trim() || "#";
-
-    if (!host || !port || !clientId) {
-      alert("Host, Port and Client ID are required");
-      return;
-    }
-
-    const url = `wss://${host}:${port}/mqtt`;
-
-    setStatus("Connecting...", false);
-
-    const options = {
-      clientId: clientId,
-      username: username || undefined,
-      password: password || undefined,
-
-      protocolVersion: 4,
-
-      // persistent MQTT 3.1.1 session
-      clean: false,
-
-      reconnectPeriod: 3000,
-      connectTimeout: 10000,
-      keepalive: 60
-    };
-
-    try {
-      client = mqtt.connect(url, options);
-    } catch (err) {
-      setStatus("Connection error", false);
-      alert(err.message);
-      return;
-    }
-
-    client.on("connect", function(connack) {
-      setStatus("Connected", true);
-
-      document.getElementById("connectBtn").textContent = "Disconnect";
-
-      client.subscribe(
-        subscription,
-        { qos: 0 },
-        function(err) {
-          if (err) {
-            alert("Subscribe failed: " + err.message);
-          }
-        }
-      );
-    });
-
-    client.on("message", function(topic, message, packet) {
-      topics[topic] = {
-        payload: message.toString(),
-        qos: packet.qos,
-        retain: packet.retain,
-        time: new Date().toLocaleString(),
-        count: (topics[topic]?.count || 0) + 1
-      };
-
-      renderTopics();
-    });
-
-    client.on("reconnect", function() {
-      setStatus("Reconnecting...", false);
-    });
-
-    client.on("offline", function() {
-      setStatus("Offline", false);
-    });
-
-    client.on("close", function() {
-      setStatus("Disconnected", false);
-      document.getElementById("connectBtn").textContent = "Connect";
-    });
-
-    client.on("error", function(err) {
-      console.error(err);
-      setStatus("Error: " + err.message, false);
-    });
-  }
-
-  // ==============================
-  // TOPIC DISPLAY
-  // ==============================
-
-  function renderTopics() {
-    const container = document.getElementById("topics");
-
-    const filter =
-      document.getElementById("search").value.toLowerCase();
-
-    const names = Object.keys(topics)
-      .filter(topic => topic.toLowerCase().includes(filter))
-      .sort();
-
-    document.getElementById("topicCount").textContent =
-      `${Object.keys(topics).length} topics`;
-
-    if (names.length === 0) {
-      container.innerHTML =
-        '<div class="empty">No matching topics</div>';
-      return;
-    }
-
-    container.innerHTML = "";
-
-    names.forEach(topic => {
-      const item = topics[topic];
-
-      const div = document.createElement("div");
-      div.className = "topic";
-
-      const topicEl = document.createElement("div");
-      topicEl.className = "topic-name";
-      topicEl.textContent = topic;
-
-      const payloadEl = document.createElement("div");
-      payloadEl.className = "payload";
-      payloadEl.textContent = item.payload;
-
-      const meta = document.createElement("div");
-      meta.className = "meta";
-
-      meta.textContent =
-        `${item.time} | QoS ${item.qos} | Retain ${item.retain} | Count ${item.count}`;
-
-      div.appendChild(topicEl);
-      div.appendChild(payloadEl);
-      div.appendChild(meta);
-
-      container.appendChild(div);
-    });
-  }
-
-  function clearTopics() {
-    topics = {};
-    renderTopics();
-  }
-
-  // ==============================
-  // PUBLISH
-  // ==============================
-
-  function publishMessage() {
-    if (!client || !client.connected) {
-      alert("MQTT is not connected");
-      return;
-    }
-
-    const topic = value("pubTopic").trim();
-    const payload = value("pubPayload");
-
-    if (!topic) {
-      alert("Please enter topic");
-      return;
-    }
-
-    const qos = Number(value("pubQos"));
-
-    const retain =
-      value("pubRetain") === "true";
-
-    client.publish(
-      topic,
-      payload,
-      {
-        qos: qos,
-        retain: retain
-      }
-    );
-  }
-
-  // ==============================
-  // HELPERS
-  // ==============================
-
-  function value(id) {
-    return document.getElementById(id).value;
-  }
-
-  function setValue(id, val) {
-    document.getElementById(id).value = val || "";
-  }
-
-  function setStatus(text, connected) {
-    const el = document.getElementById("status");
-
-    el.textContent = text;
-
-    el.className =
-      connected
-        ? "connected"
-        : "disconnected";
-  }
-
-  loadProfiles();
-</script>
+<div class="footer">
+Paul IoT Lab
+</div>
+
+</div>
 
 </body>
 </html>
